@@ -24,6 +24,7 @@
   - 'table_print'
   - 'faker'
   - décommenter 'bcrypt'
+  - 'letter_opener'
 
 ### $ bundle install 
 ==> installation des gems
@@ -36,8 +37,8 @@
 
 Le Model est chargé de stocker des données dans une table.
 
-### $ rails generate model NomModel nom_column1:type nom_column2:type
-(type == string, ou integer, ou boolean, ou text, ou datetime,...)
+### $ rails generate model NomModel nom_column1:type nom_column2:type ....
+(type == string, integer, boolean, text, datetime,...)
 
 
 ## 1) Va créer ton Model NomModel dans:
@@ -49,7 +50,7 @@ Le Model est chargé de stocker des données dans une table.
 		|   |   |-- application_record.rb
 		|   |   |-- *nom_model.rb* 
 
-Dans ton nom_model.rb:
+Dans ton nom_model.rb, tu mettras toutes les choses importantes relatives à chaque création d'instance de ton model
 
 	class NomModel < ApplicationRecord
 	
@@ -58,7 +59,7 @@ Dans ton nom_model.rb:
 	    ex: belongs_to :autre_model
 	        has_many :autre_models, +/- through: :autre_models, +/- dependent: :destroy
 
-	   # tu peux fixer les règles de ton model avec validates :
+	   # tu peux fixer les restrictions de tes entrées de tables avec validates :
 
 	      ex:  validates :nom_column1,
 	           presence: true/false,
@@ -67,9 +68,7 @@ Dans ton nom_model.rb:
 	           numericality: { greater_than: 0 }
 
 	           validates :nom_column2,
-	        		{ with: /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/, message: "email adress please" }
-
-	       Tu peux auusi créer des méthodes à intégrer aux validates
+	        		{ with: /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/, message: "email adress please" } == email valide avec un @
 
 	    # en cas de mot de passe crypté
 
@@ -77,19 +76,21 @@ Dans ton nom_model.rb:
 
 	    # en cas de callbacks
 
-	      ex:  after_create :send_welcome_email
+	      ex:  after_create :methode1
 	           before_save
 	           before_validation
 
 	      associer la méthode qui va avec
-	           def send_welcome_email
-			    		# le code qui envoit l'email
+	          def methode1
+			    		# le code de la methode1
 			  		end
+
+			  # Tu peux auusi créer des méthodes à intégrer aux validates pax ex
 
 	end
 
 
-## 2) Va créer, en parallèle, une 'migration' du model == table,dans:
+## 2) Création, en parallèle, d'une 'migration' du model (== table) dans /db/migrate
 	
 
 	nom_app
@@ -106,7 +107,7 @@ Dans ta migration:
 	      t.type :nom_column2 
 
 	      # tu vas pouvoir y entrer la dépendance de ta table à d'autres, s'il y en a:
-	      t.belongs_to: autre_table, index: true  #cette ligne rajoute la référence à la table autre_tables == autre_table_id
+	      t.belongs_to :autre_tables, index: true  #cette ligne rajoute la référence à la table autre_tables == autre_table_id
 
 	      t.timestamps (crée une column id, created_at et update_at)
 	    end
@@ -135,23 +136,27 @@ Pour vérifier la gueule de ta table, tu peux aller dans:
 		|   |   |-- numéro_de_migration_create_nom_models.rb
 		|   |   |-- *schema.rb*
 
-WARNING : CONSULTABLE ET NON MODIFIABLE!!!
+## WARNING : CONSULTABLE ET NON MODIFIABLE!!!
 
 
 ### $ rails console ou $ rails console --sandbox 
+
 une fois ta/tes tables migrées (rails db:migrate), teste-la/les dans la console
-ex: - (+/- tp) n = NomModel.new
+
+		- (+/- tp) NomMOdel.all
+
+		- (+/- tp) n = NomModel.new(column1:type, column2:type)
+
+		- (+/- tp) n = NomModel.save
 
 	  - (+/- tp) n.nom_column1	
 
-    - (+/- tp) n = NomModel.save
+    - (+/- tp) n.autretables (si d'autres tables, en fonction de tes liens de tables)
 
-    - (+/- tp) n.autretables (en fonction de tes liens de tables)
-
-    - (+/- tp) n.autretable (en fonction de tes liens de tables)
+    - (+/- tp) n.autretable (si d'autres tables, en fonction de tes liens de tables)
 
 
-## Pour une meilleure compréhension de la construction de tes tables par des tiers et éviter de te perdre dans les migrations, il est préférable d'ajouter de nouvelles migrations pour les changements de tables que de faire des $ rails db:rollback
+## Pour une meilleure compréhension de la construction de tes tables par des tiers et éviter de te perdre dans les migrations, il est préférable d'ajouter de nouvelles migrations pour les modifications de table plutôt que de faire des $ rails db:rollback
 
 
 ### $ rails generate migration NomMigration 
@@ -164,24 +169,32 @@ ex: - (+/- tp) n = NomModel.new
 		|   |   |-- *numéro_de_migration_nom_migration.rb*
 		|   |   |-- schema.rb
 
-Par exemple, dans ta nouvelle migration, tu pourras ajouter:
+Par exemple, dans ta nouvelle migration, tu pourras:
 
 	class NomMigration < ActiveRecord::Migration[5.2]
 		def change
+
 		   add_column :nom_models, :nom_column, :type
+		   # ajouter une nouvelle column
+
 		ou remove_column :nom_models, :nom_column, :type
-		ou add_reference :nom_models, :autre_model, foreign_key: true (= rajoute dans la tables nom_models une column autre_model_id de la table autre_models d'un model AutreTable)
+			 # supprimer une column 
+
+		ou add_reference :nom_models, :autre_model, foreign_key: true
+			 # rajoute dans la tables nom_models une column autre_model_id de la table autre_models d'un model AutreTable
+
 		end
 	end
 
 
 Ex de raccourci:
-### $ rails genarate migration add_nom_column_to_nom_models nom_column3:type
+### $ rails genarate migration add_nom_column_to_nom_model nom_column3:type
 ==> rajoute directement une nom_column3 dans ta table nom_models
 
-N'oublie pas de "pusher" la migration: $ rails db:migrate !!!!
+N'oublie pas de "pusher" la migration:
+==> $ rails db:migrate !!!!
 
-### Utilisation de seeds.rb: pour mettre des entrées (=objets) dans les tables
+## 3) Utilisation de seeds.rb: pour mettre des entrées (=objets) dans les tables
 
 	  nom_app
 		|-- db
@@ -192,7 +205,12 @@ N'oublie pas de "pusher" la migration: $ rails db:migrate !!!!
 		|   |   |-- *seeds.rb*
 
   - soit à la main
-  - soit en utilisant la gem 'faker' mise dans le Gemfile
+	
+		NomModel.destroy_all
+
+		NomModel.create(column1:type, column2:type)
+
+  - soit en utilisant la gem 'faker' mise dans le Gemfile, pour créer des entrées fictives (https://github.com/faker-ruby/faker)
 
 		require 'faker'
 
@@ -200,41 +218,47 @@ N'oublie pas de "pusher" la migration: $ rails db:migrate !!!!
 
 		10.times do
 			NomModel.create(
-				nom_column1: nom_du_Faker (https://github.com/faker-ruby/faker),
+				nom_column1: nom_du_Faker,
 				nom_column2: nom_du_Faker
 				)
 		end
 
 ### Afin d'activer le seeds.rb: $ rails db:seed
 
-## ATTENTION: PENSE À CHANGER TON seeds.rb ET FAIRE UN $ rails db:seed A CHAQUE CHANGEMENT DANS TES TABLES!!!!
-## FAIS UN MAX DE TESTS EN CONSOLE APRÈS CRÉATION DE TES TABLES HISTOIRE DE NE PAS ÊTRE SURPRIS PAR LA SUITE!!!!
+
+### ATTENTION: PENSE À CHANGER TON seeds.rb ET FAIRE UN $ rails db:seed A CHAQUE MODIFICATIONS DANS TES TABLES!!!!
+### FAIS UN MAX DE TESTS EN CONSOLE APRÈS CRÉATION DE TES TABLES HISTOIRE DE NE PAS ÊTRE SURPRIS PAR LA SUITE!!!!
 
 
 # Création des Controllers et Views
 
 Le controller agit en tant que chef d'orchestre de l'application.
+
 Chaque requête (url) que l'utilisateur envoit au routeur de l'application va appeler le controller correspondant à l'url.
+
 Le Controller consulte son Model relié à sa table de données.
-Le Controller récupère les données et les transmet à la View correspondante pour afficher la réponse à la requête.
+
+Le Controller récupère les données et les transmet à la View correspondante pour afficher la réponse à la requête dans le navigateur.
 
 Chaque Controller est en relation avec son Model et sa View.
+
 Chaque Controller possède:
-  - ses méthodes reposant sur le système CRUD == ensemble d'actions que l'on peut faire sur toute application
 
-C = create: créer un contenu (utilisateur, message, mail,...)
+  - ses méthodes reposant sur le système CRUD == ensemble d'actions que l'on peut faire sur toute instance créée par le Model
 
-R = Read: lire des indormations
+C = CREATE: créer les instances (utilisateurs, évènements, gossips,...)
 
-U = upadte: ajouter de nouvelles données
+R = READ: lire les indormations des instances
 
-D = Destroy: supprimer des données
+U = UPDATE: mise à jour des données d'une instance
+
+D = DESTROY: supprimer les instances 
 
   - les méthodes sont étroitement liées aux urls envoyées par le routeur au Controller correspondant à travers le système REST
 
-### Le nom du Controlleur sera le même que celui du Model et de la View
+#### Le nom du Controlleur sera le même que celui du Model et de la View
 
-### Schéma d'imbrication de CRUD et REST
+#### Schéma d'imbrication de CRUD et REST
 
 
 	   Routes possibles REST                                        |      méthode appelée du nom_controller      |     CRUD
@@ -258,16 +282,17 @@ D = Destroy: supprimer des données
 
 Méthode GET: utilisée pour demander une page (et derrière la renvoyer à l'utilisateur)
 
-Méthode POST: utilisée pour recevoir de l'information d'un utilisateur et derrière créer une ressource en base 
+Méthode POST: utilisée pour recevoir de l'information d'un utilisateur et derrière créer une instance en base 
 
-Méthode PUT/PATCH: utilisées pour recevoir de l'information d'un utilisateur et derrière mettre à jour une ressource en base
+Méthode PUT/PATCH: utilisées pour recevoir de l'information d'un utilisateur et derrière mettre à jour une instance en base
 
-Méthode DELETE: utilisée pour demander la suppression une ressource en base
+Méthode DELETE: utilisée pour demander la suppression une instance en base
+
 
 ### $ rails generate controller nom_controller(+s) index show new create edit update destroy
 
 
-## 1) Création du Controller avec les méthodes index, show, new, create, edit, update, et destroy
+## 1) Création du Controller avec les méthodes CRUD index, show, new, create, edit, update, et destroy
 
 	  nom_app
 	  |-- app
@@ -277,19 +302,22 @@ Méthode DELETE: utilisée pour demander la suppression une ressource en base
 		|   |   |-- *nom_controllers_controller.rb*
 
 
-Dans nom_controllers_controller.rb, on retrouve les méthodes annoncées lors de la création du Controller
+==> Dans app/controllers, création de nom_controllers_controller.rb 
+
+On retrouve les méthodes annoncées lors de la création du Controller
 
 	class NomControlers Controller < ApplicationController
 
 	  before_action :authenticate_user, only: [:show, :new, :edit, :update, :destroy]
 	  before_action :authenticate_current_user, only: [:edit, :destroy]
+	  # si nécessaire, mettre les callbacks associés aux méthodes définis dans le Model correspondant 
 	  
 	  def index (en lien avec la route "/nom_controller", méthode GET)
-	    par ex: @nom_models = NomModel.all
+	    par ex: @instance_model = NomModel.all
 	  end
 
 	  def show (en lien avec la route "/nom_controller/:id", méthode GET)
-	    généralement: @nom_models = NomModel.find(params[:id])
+	    généralement: @instance_model = NomModel.find(params[:id])
 	                  # récupère l'id de l'url via params
 	  end
 
@@ -299,12 +327,10 @@ Dans nom_controllers_controller.rb, on retrouve les méthodes annoncées lors de
 
 	  def create (en lien avec la route "/nom_controller", méthode POST)
 
-	    par ex: @nom_model = NomModel.new(nom_column:params[:...], nom_column:.....)
+	    par ex: @instance_model = NomModel.new(nom_column:params[:...], nom_column:.....)
 
 	    if @nom_model.save 
-	    	redirect_to gossips_path
-
-			@nom_model.send_welcome_email (# si callbacks dans le model, par ex)
+	    	redirect_to prefix_route_path
 
 	    else
 	    	render 'new'
@@ -316,10 +342,10 @@ Dans nom_controllers_controller.rb, on retrouve les méthodes annoncées lors de
 	  end
 
 	  def update
-	    par ex: @nom_model = NomModel.find(params[:id])
+	    par ex: @instance_model = NomModel.find(params[:id])
 
-	      if @nom_model.update(content:params[:content])
-	        redirect_to gossip_path
+	      if @instance_model.update(column1:params[:column1])
+	        redirect_to prefix_route_path
 	      else
 	        render :edit
 	      end
@@ -327,10 +353,10 @@ Dans nom_controllers_controller.rb, on retrouve les méthodes annoncées lors de
 
 	  def destroy
 
-	      par ex: @nom_model = NomModel.find(params[:id])
+	      par ex: @instance_model = NomModel.find(params[:id])
 
-	      if @nom_model.destroy 
-	      	redirect_to gossips_path   
+	      if @instance_model.destroy 
+	      	redirect_to prefix_route_path   
 	      else
 	        render :destroy
 	      end
@@ -358,6 +384,7 @@ Dans ton routes.rb:
 	  delete "/nom_controller/:id", to "nom_controller#destroy"    
 		
 	end
+
 
 Les routes peuvent être automatisées
 ### $ rails resources :nom_controllers
@@ -391,15 +418,28 @@ On peut ajouter des caractéristiques à resources
 
 	end
 
-Pour des imbrications de routes == NESTED RESOURCES
+Pour des imbrications de routes
+
+==> NESTED RESOURCES
 
 	Rails.application.routes.draw do
 
-			  resources :gossips do
-			   resources :comments
-			  end
+	  resources :controllers1 do
+	   resources :controllers2
+	  end
 
 	end
+
+==> NAMESPACE ROUTES (en cas d'espace admin par ex)
+
+	Rails.application.routes.draw do
+
+	  namespace :controllers1 do
+	   resources :controllers2 :controllers3 .....
+	  end
+
+	end
+
 
 Tu peux visualiser tes routes
 ### $ rails routes
@@ -424,7 +464,7 @@ Tu peux visualiser une route spécifique
 		|   |   |   |-- *update.html.erb*
 
 
-Chaque fichier .erb correspond à la méthode du Controller associé
+Chaque fichier .erb correspond à la méthode CRUD du Controller associé
 
 Tu mettras dans le fihier .erb:
 
@@ -447,11 +487,12 @@ ex:
 
 		<%= link_to "clique ici", prefix_path %> == <a href="url_liée_au_path_saisi_dans_ton_link_to">clique ici</a>
 
-"prefix" == prefix de la route vers lequel tu envoies ton utilisateut, visible dans $ rails routes
+
+### "prefix" == prefix de la route vers lequel tu envoies ton utilisateut, visible dans $ rails routes
 
 
 
-A NOTER:
+### A NOTER:
 
   - le dossier layouts contient le fichier application.html.erb, qui est le fichier mère de tous les autres fichiers .erb == permet un html commun à tous les fichiers.erb.
 
@@ -464,11 +505,11 @@ C'est notamment ici qu'il faudra mettre le CDN pour Bootstrap
 		|   |   |   |-- *application.html.erb*
 
 
-  - tu peux utiliser du langage ruby dans le les fichiers.erb!!! 
+  - Il faudra utiliser le langage ruby dans les fichiers.erb!!! 
 
 en mettant ton code entre <% %> + <% end %>
 
-en mettant <%=  %>, pour afficher le résultat dans ton html 
+en mettant <%=  %>, pour afficher son résultat dans ton html 
 
 ex: 
 
@@ -494,75 +535,18 @@ ex:
 Comme pour les views, le fichier application.css est le fihier css mère.
 
 
+## 5) Crétion des fichiers javascripts correspondants aux fichiers.erb
+
+    nom_app 
+	  |-- app
+		|   |-- assets 
+		|   |   |-- javascripts
+		|   |   |   |-- application.js
+		|   |   |   |-- *nom_controller.coffee*
+
+Comme pour les views, le fichier application.js est le fihier javascripts mère.
 
 
-	|-nom_app
-	|
-	|-- app
-	|   |-- assets
-	|   |   |-- config
-	|   |   |-- images
-	|   |   |   |-- .keep
-	|   |   |-- javascripts
-	|   |   |   |-- channels
-	|   |   |   |   -- .keep
-	|   |   |   |-- application.js
-	|   |   |   |-- cable.js  
-	|   |   |-- stylesheets
-	|   |   |   |-- application.css
-	|   |-- channels
-	|   |-- controllers
-	|   |   |-- concerns
-	|   |   |   |-- .keep
-	|   |   |-- application_controller.rb
-	|   |-- helpers
-	|   |   |-- application_helper.rb
-	|   |-- jobs
-	|   |-- mailers
-	|   |-- models
-	|   |   |-- concerns
-	|   |   |   |-- .keep
-	|   |   |-- application_record.rb
-	|   |-- views
-	|   |   |-- layouts
-	|   |   |   |-- application.html.erb
-	|   |   |   |-- mailer.html.environment.rb
-	|   |   |   |-- mailers.txt.erb
-	|-- bin
-	|-- config
-	|	|-- environments
-	|   |   |-- development.rb
-	|   |   |-- production.rb
-	|   |   |-- test
-	|	|-- initializers
-	|   |-- locales
-	|   |-- application.rb
-	|   |-- boot.rb
-	|   |-- cable.yml 
-	|   |-- credentials.yml.enc
-	|   |-- database.yml
-	|   |-- environment.rb
-	|   |-- puma.rb
-	|   |-- routes.rb
-	|   |-- spring.rb
-	|   |-- storage.yml
-	|-- db
-	|   |-- migrate
-	|   |-- developent.sqlite3
-	|   |-- schema.rb
-	|   |-- seeds.rb
-	|-- lib
-	|-- log
-	|-- public
-	|-- storage
-	|-- test
-	|-- tmp
-	|-- vendor 
-	|-- .gitignore
-	|--.ruby-version
-	|-- config.ru 
-	|-- Gemfile
-	|-- Gemfile.lock
-	|-- package.json 
-	|-- Rakefile
-	|-- README.md
+
+
+	
