@@ -1,6 +1,6 @@
 
 
-# ************************************************************************************* ACTION MAILER ***************************************************************************************
+# ***************************************** ACTION MAILER ***************************************
 
 
 Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Action Mailer. Grâce à lui, tu vas pouvoir automatiser l'envoi de certains e-mails selon les critères que tu définiras (actions de tes utilisateurs, événements ou alertes données, etc..).
@@ -75,8 +75,10 @@ Création d'un template d'email dans app/views/user_mailer/
 
 ## Définir à quel moment notre app Rails doit effectuer l'envoi
 
-### ==> Généralement, c'est au modèle de le faire, après création de l'instance du model == callback after_create
+### ==> Généralement, c'est au modèle de le faire: définir une méthode appelant la méthode définit dans UserMailer à appliquer après création de l'instance du model == callback after_create
+
 ex: Si tu veux envoyer un email à la création d'un utilisateur, c'est un callback after_create dans le model User
+
     Si tu veux envoyer un email quand un utilisateur vient de prendre un RDV sur Doctolib, c'est un callback after_create à la création d'un Appointment
 
 	class User < ApplicationRecord
