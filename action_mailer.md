@@ -1,6 +1,6 @@
 
 
-# ***************************************** ACTION MAILER ***************************************
+# ****************** ACTION MAILER ***************
 
 
 Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Action Mailer. Grâce à lui, tu vas pouvoir automatiser l'envoi de certains e-mails selon les critères que tu définiras (actions de tes utilisateurs, événements ou alertes données, etc..).
@@ -13,7 +13,7 @@ L'Action Mailer est organisé en plusieurs éléments au sein d'une app Rails :
 
 Au final, il faut considérer qu'Action Mailer a un fonctionnement très proche du MVC classique de Rails sauf qu'au lieu d'afficher des pages HTML sur un navigateur, il envoie des fichiers HTML ou text par e-mail.
 
-# Mise en place de Action Mailer
+# 1) Mise en place de Action Mailer
 
 ## $ rails g mailer UserMailer
 
@@ -77,9 +77,9 @@ Création d'un template d'email dans app/views/user_mailer/
 
 ### ==> Généralement, c'est au modèle de le faire: définir une méthode appelant la méthode définit dans UserMailer à appliquer après création de l'instance du model == callback after_create
 
-ex: Si tu veux envoyer un email à la création d'un utilisateur, c'est un callback after_create dans le model User
+Si tu veux envoyer un email à la création d'un utilisateur, c'est un callback after_create dans le model User
 
-    Si tu veux envoyer un email quand un utilisateur vient de prendre un RDV sur Doctolib, c'est un callback after_create à la création d'un Appointment
+Si tu veux envoyer un email quand un utilisateur vient de prendre un RDV sur Doctolib, c'est un callback after_create à la création d'un Appointment
 
 	class User < ApplicationRecord
 	  after_create :welcome_send
@@ -97,7 +97,7 @@ ex: Un email pour réinitialiser le mot de passe peut se mettre dans le controll
 ### ==> autres cas: création de Service
 ex: Si tu veux envoyer une newsletter hebdomadaire, c'est un Service qui tourne de manière hebdomadaire
 
-# Résumé
+# 2) Résumé
 
     - Un utilisateur est créé en BDD par le model
     - Grâce au callback after_create, on exécute la méthode welcome_send sur l'instance qui vient d'être sauvée en BDD
@@ -106,7 +106,7 @@ ex: Si tu veux envoyer une newsletter hebdomadaire, c'est un Service qui tourne 
     - Les 2 templates (un HTML et un text) sont personnalisés avec les entrées en Ruby (@user.name, @user.email et @url) avant d'être balancés par e-mail
 
 
-# Configuration de Action Mailer
+# 3) Configuration de Action Mailer
 
 On veut pouvoir envoyer des vrais e-mails. C'est tout.
 
@@ -198,8 +198,9 @@ ATTENTION: Évidemment, il faut que tu rajoutes dans ton fichier .env ton login 
 
 
 
-=====================================================================================================================================================================================================================*********************************************************************************************************************************************************************************************************************=====================================================================================================================================================================================================================
-
+=============================================================================
+*****************************************************************************
+=============================================================================
 
 
 # EXEMPLE: ENVOI MAIL DE CONFIRMATION DE RECEPTION À UNE PERSONNE, APRÈS LE REMPLISSAGE D'UN FORMULAIRE DE CONTACT
