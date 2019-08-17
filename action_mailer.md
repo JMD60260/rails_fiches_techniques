@@ -33,33 +33,11 @@ Au final, il faut considérer qu'Action Mailer a un fonctionnement très proche 
 
 ### ==> crée un dossier user_mailer dans aap/views
 
-## Création d'un template d'email dans app/views/user_mailer/
+Création d'un template d'email dans app/views/user_mailer/
 
-IMPORTANT: le nom du template est extrêmement important. Il doit être identique à celui de la méthode welcome_email et placé dans le dossier views/user_mailer/ qui contient tous les templates e-mails relatifs au mailer UserMailer
+#### IMPORTANT: le nom du template est extrêmement important. Il doit être identique à celui de la méthode welcome_email et placé dans le dossier views/user_mailer/ qui contient tous les templates e-mails relatifs au mailer UserMailer
 
-ex: si on veut envoyer un mail de confirmation de réception de mail suite au remplissage un d'un formulaire de contact sur notre site:
-
-- $ rails g mailer UserMailer
-- dans app/mailers/user_mailer.rb 
-
-		class UserMailer < ApplicationMailer
-
-		  default from: 'no-reply@monsite.fr'
-
-			def contact_email(user)
-
-		    #on récupère l'instance user pour ensuite pouvoir la passer à la view en @user
-		    @user = user 
-
-		    #on définit une variable @url qu'on utilisera dans la view d’e-mail
-		    @url  = 'http://monsite.fr/login' 
-
-		    # c'est cet appel à mail() qui permet d'envoyer l’e-mail en définissant destinataire et sujet.
-		    mail(to: @user.email, subject: 'Réception de votre email')
-		  end
-		end
-
-### ==> template de type html : welcome_email.html.erb
+-template de type html : welcome_email.html.erb
 
 	<!DOCTYPE html>
 	<html>
@@ -78,7 +56,7 @@ ex: si on veut envoyer un mail de confirmation de réception de mail suite au re
 	  </body>
 	</html>
 
-### ==> template de type text: welcome_email.text.erb
+-template de type text: welcome_email.text.erb
 
 	Salut <%= @user.name %> et bienvenue chez nous !
 	==========================================================
@@ -90,7 +68,7 @@ ex: si on veut envoyer un mail de confirmation de réception de mail suite au re
 	À très vite sur monsite.fr !
 
 
-## Il ne reste plus qu'à définir à quel moment notre app Rails doit effectuer l'envoi
+## Définir à quel moment notre app Rails doit effectuer l'envoi
 
 ### ==> Généralement, c'est au modèle de le faire, après création de l'instance du model == callback after_create
 ex: Si tu veux envoyer un email à la création d'un utilisateur, c'est un callback after_create dans le model User
@@ -123,7 +101,7 @@ ex: Si tu veux envoyer une newsletter hebdomadaire, c'est un Service qui tourne 
 
 # Configuration de Action Mailer
 
-Ici, le cahier des charges est simple : on veut pouvoir envoyer des vrais e-mails. C'est tout.
+On veut pouvoir envoyer des vrais e-mails. C'est tout.
 
 Pour le faire, tu as le choix entre plein de services différents : Mandrill by MailChimp, Postmark, Amazon SES, etc. Nous, on a une préférence pour MailJet à THP (ils sont efficaces, pas chers et français).
 Toutefois, pour des raisons de fiabilité d’envoi depuis des adresses gratuites ou fake, je vais te montrer comment passer par le leader du secteur : SendGrid.
@@ -181,7 +159,7 @@ Dans /confog/envirronement.rb
 
 ### ==> dans un premier temps, tu peux faire plus simple en testant une fois l'envoi directement depuis l'environnement de développement (ton ordi).
 
-    - Enlève la ligne config.action_mailer.delivery_method = :letter_opener du fichier config/environments/development.rb ;
+    - Enlever la ligne config.action_mailer.delivery_method = :letter_opener du fichier config/environments/development.rb ;
     - Va dans ta console Rails ;
     - Créé un utilisateur avec une adresse en @yopmail.com ;
     - Va vérifier que l’e-mail est bien arrivé sur http://www.yopmail.com/.
@@ -227,7 +205,7 @@ ATTENTION: Évidemment, il faut que tu rajoutes dans ton fichier .env ton login 
 	class User < ApplicationRecord
 		validates :first_name, presence: true
 		validates :last_name, presence: true
-		validates :email, presence: true 
+		validates :email, presence: true, { with: /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/, message: "email adress please" } 
 		validates :title, presence: true
 		validates :description, presence: true
 	end
@@ -236,9 +214,39 @@ ATTENTION: Évidemment, il faut que tu rajoutes dans ton fichier .env ton login 
 
 ==> $ rails db:migrate
 
-## $ rails g controller users index show new create edit update destroy 
+## $ rails g controller users index new create 
 
 ==> création d'un controller users avec les différentes méthodes dans /app/controllers
+
+	class EventsController < ApplicationController
+
+		def index
+		end
+
+	  def new
+	  end
+
+	  def create
+
+	    puts "#"*60
+	    puts params
+	    puts "#"*60
+	    
+	    @user = User.new(first_name:params[:first_name], last_name:params[:last_name], title:params[:title], description:params[:description])
+
+	    if @user.save 
+
+	    flash[:success] = "Votre demande de contact a bien été prise en charge."
+	    redirect_to users_path
+
+	    else
+
+	    render 'new'
+
+	    end
+	  end
+	  
+	end
 
 ==> création des views correspondantes aux méthodes dans /app/views/users
 
@@ -250,19 +258,151 @@ ATTENTION: Évidemment, il faut que tu rajoutes dans ton fichier .env ton login 
 
 ==> dans app/mailer/user_mailer.rb
 
+	class UserMailer < ApplicationMailer
+	  default from: 'no-reply@les_voix_se_levent.fr'
+		def contact_email(user)
+	    @user = user 
+	    # @url  = 'http://www.lesvoixselevent.fr/ 
+	    mail(to: @user.email, subject: 'Réception de votre email')
+	  end
+	end
 
-class UserMailer < ApplicationMailer
+==> dans app/views/user_mailer
 
-  default from: 'no-reply@les_voix_se_levent.fr'
+-template user_mailer.html.erb 
 
-	def contact_email(user)
-    @user = user 
-    @url  = 'http://www.lesvoixselevent.fr/ 
+	<!DOCTYPE html>
+	<html>
+	  <head>
+	    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+	  </head>
+	  <body>
+	    <h1>Bonjour <%= @user.last_name %> <%= user.last_name %></h1>
+	    <p>
+	      Vous venez de remplir le formulaire de contact concernant l'exposition photosonore "Les Voix se Lèvent", en utilisant l'e-mail suivant: <%= @user.email %>.
+	    </p>
+	    <p>
+	    	Nous accusons réception de votre demande de contact et nous vous répondrons dans les plus brefs délais.
+	    </p>
+	    <p>
+	    	A très bientôt.
+	    </p>
+	  </body>
+	</html>
 
-    # c'est cet appel à mail() qui permet d'envoyer l’e-mail en définissant destinataire et sujet.
-    mail(to: @user.email, subject: 'Réception de votre email')
-  end
-end
+-template user_mailer.text.erb 
+
+	Bonjour <%= @user.last_name %> <%= user.last_name %>
+		==========================================================
+		 
+		Vous venez de remplir le formulaire de contact concernant l'exposition photosonore "Les Voix se Lèvent", en utilisant l'e-mail suivant: <%= @user.email %>.
+		 
+		Nous accusons réception de votre demande de contact et nous vous répondrons dans les plus brefs délais.
+
+		A très bientôt.
+
+## Dans le model User, mettre le callback after_create
+
+	class User < ApplicationRecord
+
+		after_create :contact_email
+
+		def contact_email
+	    UserMailer.contact_email(self).deliver_now
+	  end
+
+		validates :first_name, presence: true
+		validates :last_name, presence: true
+		validates :email, presence: true, { with: /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/, message: "email adress please" } 
+		validates :title, presence: true
+		validates :description, presence: true
+
+	end
+
+## Config Action Mailer
+
+### Test en development
+
+==> dans config/environments/development.rb: config.action_mailer.delivery_method = :letter_opener et config.action_mailer.perform_deliveries = true
+
+==> dans le terminal, faire une création d'instance genre User.create(............)
+
+==> Tu devrais voir un visuel de l’e-mail que tu as rédigé en HTML s'afficher dans ton navigateur !
+
+### Production
+
+#### test avec sendgrid
+
+==> mettre clés API dans .env
+
+==> dans /config/envirronement.rb
+
+	ActionMailer::Base.smtp_settings = {
+	  :user_name => ENV['SENDGRID_LOGIN'],
+	  :password => ENV['SENDGRID_PWD'],
+	  :domain => 'monsite.fr',
+	  :address => 'smtp.sendgrid.net',
+	  :port => 587,
+	  :authentication => :plain,
+	  :enable_starttls_auto => true
+	}
+
+==> Enlever la ligne config.action_mailer.delivery_method = :letter_opener du fichier config/environments/development.rb 
+
+==> test en console avec une adresse en @yopmail.com
+
+==> $ heroku config:set PROTONMAIL_PWD='clé_api'
+
+==> Sengrid + yopmail.com
+
+#### test avec boîte mail perso
+
+==> chercher clé API boîte mail == nom d'utilisateur/mdp
+
+==> mettre ces clés dans .env
+
+PROTONMAIL_LOGIN='nom_utilisateur'
+PROTONMAIL_PWD='mot_de_passe'
+
+==> Dans /config/envirronement.rb
+
+	ActionMailer::Base.smtp_settings = {
+		:user_name => ENV['PROTONMAIL_LOGIN'],
+		:password => ENV['PROTONMAIL_PWD'],
+		:domain => 'protonmail.com', 
+		#you can also use google.com
+		:address => 'smtp.protonmail.com',
+		:port => 587,
+		:authentication => :plain,
+		:enable_starttls_auto => true  
+	}
+
+==> test en console avec adresse en @yopmail.com
+
+==> $ heroku config:set PROTONMAIL_PWD='mot_de_passe'
+
+==> test en console avec adresse en @yopmail.com
+
+#### Validation des tests!!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
