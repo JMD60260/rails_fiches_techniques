@@ -1,3 +1,8 @@
+
+
+# ************************************************************************************* ACTION MAILER ***************************************************************************************
+
+
 Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Action Mailer. Grâce à lui, tu vas pouvoir automatiser l'envoi de certains e-mails selon les critères que tu définiras (actions de tes utilisateurs, événements ou alertes données, etc..).
 
 
@@ -188,6 +193,11 @@ ATTENTION:
 		}
 
 ATTENTION: Évidemment, il faut que tu rajoutes dans ton fichier .env ton login Gmail et ton mot de passe sous la forme ENV['GMAIL_LOGIN'] = 'jose@gmail.com' et ENV['GMAIL_PWD'] = 'p1rouette_KKouette'.
+
+
+
+=====================================================================================================================================================================================================================*********************************************************************************************************************************************************************************************************************=====================================================================================================================================================================================================================
+
 
 
 # EXEMPLE: ENVOI MAIL DE CONFIRMATION DE RECEPTION À UNE PERSONNE, APRÈS LE REMPLISSAGE D'UN FORMULAIRE DE CONTACT
