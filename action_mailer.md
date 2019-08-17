@@ -1,6 +1,6 @@
 
 
-# ****************** ACTION MAILER ***************
+# *********************** ACTION MAILER **************************
 
 
 Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Action Mailer. Grâce à lui, tu vas pouvoir automatiser l'envoi de certains e-mails selon les critères que tu définiras (actions de tes utilisateurs, événements ou alertes données, etc..).
@@ -119,7 +119,9 @@ Toutefois, pour des raisons de fiabilité d’envoi depuis des adresses gratuite
 
 ### ==> $ bundle install
 
-### ==> dans config/environments/development.rb (fichier contenant les paramètres de ton environnement de développement), colle les lignes config.action_mailer.delivery_method = :letter_opener et config.action_mailer.perform_deliveries = true
+### ==> dans config/environments/development.rb (fichier contenant les paramètres de ton environnement de développement)
+
+Colle les lignes config.action_mailer.delivery_method = :letter_opener et config.action_mailer.perform_deliveries = true
 
 ### ==> dans le terminal, faire une création d'instance
 
@@ -139,10 +141,10 @@ Toutefois, pour des raisons de fiabilité d’envoi depuis des adresses gratuite
 
 ### ==> sauvegarder les clés API
 
-    - Crée un fichier .env à la racine de ton application.
-    - Ouvre-le et écris dedans les informations suivantes : SENDGRID_LOGIN='apikey' et SENDGRID_PWD='ta_clef_API' en remplaçant bien sûr ta_clef_API par la clef que tu viens de générer.
-    - Rajoute gem 'dotenv-rails' à ton Gemfile et fait le $ bundle install
-    - Et l'étape cruciale qu'on oublie trop souvent : ouvre le fichier .gitignore à la racine de ton app Rails et écris .env dedans.
+	  - Crée un fichier .env à la racine de ton application.
+	  - Ouvre-le et écris dedans les informations suivantes : SENDGRID_LOGIN='apikey' et SENDGRID_PWD='ta_clef_API' en remplaçant bien sûr ta_clef_API par la clef que tu viens de générer.
+	  - Rajoute gem 'dotenv-rails' à ton Gemfile et fait le $ bundle install
+	  - Et l'étape cruciale qu'on oublie trop souvent : ouvre le fichier .gitignore à la racine de ton app Rails et écris .env dedans.
 
 ### ==> paramétrer le SMTP avec Sengrid
 
@@ -198,9 +200,9 @@ ATTENTION: Évidemment, il faut que tu rajoutes dans ton fichier .env ton login 
 
 
 
-=============================================================================
-*****************************************************************************
-=============================================================================
+ =============================================================================
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ =============================================================================
 
 
 # EXEMPLE: ENVOI MAIL DE CONFIRMATION DE RECEPTION À UNE PERSONNE, APRÈS LE REMPLISSAGE D'UN FORMULAIRE DE CONTACT
