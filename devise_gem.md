@@ -11,6 +11,27 @@ Devise permet de créer un système d'authentification complet en gérerant pour
     Le logout après un certain temps d'inactivité ;
     Le blocage de compte après un certain nombre de tentative de login ratées.
 
+# Résumé des commandes
+
+## préparation
+
+## $ rails g devise nom_model_auquel_va_s'appliquer_devise (généralement user)
+
+==> Nouvelle migration 
+==> Modif du Model auquel s'applique Devise
+==> Création de nouvelles routes
+
+## $ rails generate devise:views
+
+## Intégration des views Devise dans l'appli
+
+## En prod (Heroku) : 
+
+==> Mettre dans environments/develepment config.action_mailer.default_url_options = { :host => 'YOURAPPNAME.herokuapp.com' }
+
+
+
+# Préparation
 
 ## gem 'devise' dans Gemfile
 
@@ -26,7 +47,9 @@ Devise permet de créer un système d'authentification complet en gérerant pour
 
     un fichier contenant les messages d'erreur de Devise.
 
-Mettre config.action_mailer.default_url_options = { host: 'localhost', port: 3000 } dans config/environments/develpment.rb
+# Mettre config.action_mailer.default_url_options = { host: 'localhost', port: 3000 } dans config/environments/develpment.rb
+
+# Devise
 
 ## $ rails g devise nom_model_auquel_va_s'appliquer_devise (généralement user)
 
@@ -147,22 +170,57 @@ En faisant $ rails routes
                             DELETE /users(.:format)                                                                         devise/registrations#destroy
                             POST   /users(.:format)                                                                         devise/registrations#create
 
+Décryptage des routes:
+
+    devise/sessions#new : pour accéder à la view de connexion.
+
+    devise/sessions#create : le POST pour se connecter.
+
+    devise/sessions#destroy : le DELETE pour se déconnecter.
+
+    devise/passwords#new : pour accéder à l'écran "mot de passe oublié ?" où tu rentres ton adresse email pour recevoir un email de réinitialisation de mot de passe.
+
+    devise/passwords#create : le POST pour réinitialiser le mot de passe.
+
+    devise/passwords#edit : pour accéder à la view où tu rentres ton nouveau mot de passe (tu y accèdes en cliquant dans le lien "réinitialiser le mot de passe" dans ton email de réinitialisation de mot de passe)
+
+    devise/passwords#update : le PATCH/PUT pour changer de mot de passe.
+
+    devise/registrations#cancel (rarement utilisée) : pour accéder à la view permettant de supprimer une inscription.
+
+    devise/registrations#new : pour accéder à la view d'inscription au site.
+
+    devise/registrations#create : le POST pour s'inscrire sur le site.
+
+    devise/registrations#edit : pour accéder à la view de modification d'une inscription (notamment son email et son mot de passe).
+
+    devise/registrations#update : le PATCH/PUT pour modifier son email et mot de passe
+
+    devise/registrations#destroy : le DELETE pour détruire son compte
+
+
 ## $ rails generate devise:views
 
-Mettre les liens des views
+==> Crée automatiquement les views de Devise dans app/views/devise
 
-# Devise utilise des helpers importants:
+    app/views/devise/shared/_links.html.erb : une petite partial qui affiche les liens dont tu as besoin en fonction de la page (exemple : le lien "mot de passe oublié" sur l'écran de connexion).
 
-- user_signed_in? == l'utilisateur est-il connecté?
-=> s'utilise en condition d'accès à certaine page: "si l'utilisateur est connecté..."
+    app/views/devise/confirmations/new.html.erb : l'écran de confirmation (pas besoin pour le moment).
 
-- current_user
-=> le user devient current_user quand l'utilisateur est connecté
+    app/views/devise/passwords/edit.html.erb : la vue où tu rentres ton nouveau mot de passe (tu y accèdes en cliquant dans le lien "réinitialiser le mot de passe" dans ton email de réinitialisation de mot de passe).
 
-- athenticate_user!
-=> s'utilise dans les callbacks
+    app/views/devise/passwords/new.html.erb : l'écran "mot de passe oublié ?" où tu rentres ton adresse email pour recevoir un email de réinitialisation de mot de passe.
 
-Pimpage de formulaires: ex
+    app/views/devise/registrations/edit.html.erb : l'écran pour modifier les informations de son compte utilisateur (notamment son email et son mot de passe).
+
+    app/views/devise/registrations/new.html.erb : la page d'inscription au site == sign_up
+
+    app/views/devise/sessions/new.html.erb : la page de connexion au site == sign_in
+
+    app/views/devise/unlocks/new.html.erb : écran pour déverrouiller son compte (pas besoin pour le moment).
+
+
+Ex de pimpage de la view pour le sign_up avec Bootstrap
 
     <div class="container">
       <div class="row">
@@ -195,22 +253,53 @@ Pimpage de formulaires: ex
       </div>
     </div>
 
+==> Au passage, plusieurs e-mails sont générés :
 
+    app/views/devise/mailer/confirmation_instructions.html.erb : e-mail pour confirmer son compte (pas besoin pour le moment).
+
+    app/views/devise/mailer/email_changed.html.erb : e-mail pour annoncer un changement d'e-mail.
+
+    app/views/devise/mailer/password_change.html.erb : e-mail pour annoncer que ton mot de passe a été changé.
+
+    app/views/devise/mailer/reset_password_instructions.html.erb : e-mail pour donner le lien pour changer de mot de passe.
+
+    app/views/devise/mailer/unlock_instructions.html.erb : e-mail pour débloquer ton compte (pas besoin pour le moment).
+
+
+## Intégration des views Devise dans l'appli
+
+# Devise utilise des helpers importants à mettre dans les views de l'appli
+
+### user_signed_in? == l'utilisateur est-il connecté?
+==> s'utilise en condition d'accès à certaine page: "si l'utilisateur est connecté..."
+
+### current_user
+==> le user devient current_user quand l'utilisateur est connecté
+
+### athenticate_user!
+==> permet de ne donner l'accès à une page qu'aux utilisateurs connectés
+==> s'utilise dans les callbacks dans les controllers
+
+## En prod (Heroku)
 
 # Mettre dans environments/develepment config.action_mailer.default_url_options = { :host => 'YOURAPPNAME.herokuapp.com' }
 
-## AVOIR COMMITÉ!!!!
+### AVOIR COMMITÉ!!!!
 
-## $ git push heroku master
+### $ git push heroku master
 
-## $ heroku run rails db:create
+### $ heroku run rails db:create
 
-## $ heroku run rails db:migrate
+### $ heroku run rails db:migrate
 
-## $ heroku run rails db:seed
+### +/- $ heroku run rails db:seed
 
 # ATTENTION, POUR RENDRE LES IMAGES DANS HEROKU:
 
 ==> dans config/environments/production.rb 
 
 Mettre "config.assets.compile = false" en "true"
+
+
+
+
