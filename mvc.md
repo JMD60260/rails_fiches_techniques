@@ -8,7 +8,6 @@
 	  - la crétion du Controller et de sa View
 
 
-
 # Préparation
 
 
@@ -20,11 +19,12 @@
 
 ### Gemfile 
 ==> mettre tes gem préférées, genre:
-  - 'pry'
-  - 'table_print'
-  - 'faker'
+	- gem 'devise'
+  - gem 'pry'
+  - gem 'table_print'
+  - gem 'faker'
   - décommenter 'bcrypt'
-  - 'letter_opener'
+  - gem 'letter_opener'
 
 ### $ bundle install 
 ==> installation des gems
@@ -223,7 +223,7 @@ N'oublie pas de "pusher" la migration:
 				)
 		end
 
-### Afin d'activer le seeds.rb: $ rails db:seed
+### $ rails db:seed == Afin d'activer le seeds.rb
 
 
 ### ATTENTION: PENSE À CHANGER TON seeds.rb ET FAIRE UN $ rails db:seed A CHAQUE MODIFICATIONS DANS TES TABLES!!!!
@@ -548,5 +548,37 @@ Comme pour les views, le fichier application.js est le fihier javascripts mère.
 
 
 
+# Résumé des commandes
 
-	
+### $ rails new -d postgresql nom_app 
+
+### $ cd nom_app
+
+### Gemfile 
+
+### $ bundle install 
+
+### rails db:create
+
+### $ rails generate model NomModel nom_column1:type nom_column2:type ....
+
+### $ rails db:migrate, rails db:miragte status, rails db:rollback
+
+### $ rails console ou $ rails console --sandbox
+
+### ($ rails generate migration NomMigration)
+
+### $ rails db:seed
+
+### $ rails generate controller nom_controller(+s) index show new create edit update destroy
+
+### routes.rb
+
+### $ rails routes, $ rails routes|grep nom_controller
+
+### Views
+
+### css
+
+### (js)
+
