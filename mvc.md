@@ -550,35 +550,47 @@ Comme pour les views, le fichier application.js est le fihier javascripts mère.
 
 # Résumé des commandes
 
-### $ rails new -d postgresql nom_app 
+## $ rails new -d postgresql nom_app 
+==> création appli rails
 
-### $ cd nom_app
+## $ cd nom_app
 
-### Gemfile 
+## Gemfile 
 
-### $ bundle install 
+## $ bundle install 
 
-### rails db:create
+## rails db:create
+==> création de la bdd PostgreSQL
 
-### $ rails generate model NomModel nom_column1:type nom_column2:type ....
+## $ rails generate model NomModel nom_column1:type nom_column2:type ....
+==> création du Model
+==> création d'une migration
 
 ### $ rails db:migrate, rails db:miragte status, rails db:rollback
+==> 'push' la migration, état des migrations, 'down' la migration
 
 ### $ rails console ou $ rails console --sandbox
+==> test du Model en console
 
 ### ($ rails generate migration NomMigration)
 
 ### $ rails db:seed
+==> crée des entrée bdd
 
-### $ rails generate controller nom_controller(+s) index show new create edit update destroy
+## $ rails generate controller nom_controller(+s) index show new create edit update destroy
+==> création du controller
+==> création de la View correspondante
 
 ### routes.rb
+==> permet de visualiser les routes
 
-### $ rails routes, $ rails routes|grep nom_controller
+### $ rails routes, $ rails routes|grep 
+==> idem, en console
 
 ### Views
+==> html
 
-### css
+## css
 
-### (js)
+## (js)
 
