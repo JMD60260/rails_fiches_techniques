@@ -11,6 +11,8 @@ Devise permet de créer un système d'authentification complet en gérerant pour
     Le logout après un certain temps d'inactivité ;
     Le blocage de compte après un certain nombre de tentative de login ratées.
 
+
+
 # Résumé des commandes
 
 ## préparation
@@ -28,7 +30,6 @@ Devise permet de créer un système d'authentification complet en gérerant pour
 ## En prod (Heroku) : 
 
 ==> Mettre dans environments/develepment config.action_mailer.default_url_options = { :host => 'YOURAPPNAME.herokuapp.com' }
-
 
 
 # Préparation
