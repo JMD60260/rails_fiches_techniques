@@ -5,6 +5,34 @@
 
 Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Action Mailer. Grâce à lui, tu vas pouvoir automatiser l'envoi de certains e-mails selon les critères que tu définiras (actions de tes utilisateurs, événements ou alertes données, etc..).
 
+# Résumer commandes
+
+## $ rails g mailer UserMailer
+==> crée un ficher user_mailer.rb dans app/mailers == definition du mail à envoyer
+==> crée un dossier user_mailer dans aap/views == visuel dans mail en html et text
+
+## Définir à quel moment notre app Rails doit effectuer l'envoi
+==> Model, Controller == méthode + callback de ces méthodes
+
+## Config ActionMailer
+
+==> en dev:
+
+- installation de la gem 'letter_opener' dans Gemfile
+- $ bundle install
+- Colle les lignes config.action_mailer.delivery_method = :letter_opener et config.action_mailer.perform_deliveries = true dans config/environments/development.rb
+- dans le terminal, faire une création d'instance
+- Tu devrais voir un visuel de l’e-mail que tu as rédigé en HTML s'afficher dans ton navigateur !
+
+==> en prod:
+
+- choisir un service d'envoi (ex: Sengrid)
+- sauvegarder les clés API
+- paramétrer le SMTP avec Sengrid
+- $ heroku config:set SENDGRID_PWD='clé_api'
+- test avec yopmail.com
+
+
 
 L'Action Mailer est organisé en plusieurs éléments au sein d'une app Rails :
 
@@ -18,6 +46,10 @@ Au final, il faut considérer qu'Action Mailer a un fonctionnement très proche 
 ## $ rails g mailer UserMailer
 
 ### ==> crée un ficher user_mailer.rb dans app/mailers
+
+Tu vas y mettre la definition du mail à envoyer
+
+Ex avec un email de bienvenue lors de l'inscription sur l'appli 
 
 	class UserMailer < ApplicationMailer
 	  default from: 'no-reply@monsite.fr'
@@ -96,7 +128,7 @@ ex: Un email pour réinitialiser le mot de passe peut se mettre dans le controll
 
 ### ==> autres cas: création de Service
 ex: Si tu veux envoyer une newsletter hebdomadaire, c'est un Service qui tourne de manière hebdomadaire
-
+## Définir à quel moment notre app Rails doit effectuer l'envoi
 # 2) Résumé
 
     - Un utilisateur est créé en BDD par le model
