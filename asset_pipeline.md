@@ -1,4 +1,5 @@
 
+# ************** Asset pipeline ***************
 
 https://www.grafikart.fr/tutoriels/asset-pipeline-851
 

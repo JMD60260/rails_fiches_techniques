@@ -1,4 +1,5 @@
 
+# ****** Utilisation template Bootstrap Rails ****** 
 ## Trouver un template 
 
 ==> site de bootstrap
@@ -24,14 +25,14 @@ ATTENTION
 
 ## Copier/coller tout le code du du fichier index.html présent dans le template bootstrap dans l'index de l'appli
 
-## Attention à bien conserver les lien <%  %> san le <head>
+## Attention à bien conserver les lien <%  %> dans le <head>
 
-	<%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
+		<%= csrf_meta_tags %>
+	  <%= csp_meta_tag %>
 
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+	  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
 
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+	  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
 
 ## En fonction de ce qu'il y a dans ce dossier
 

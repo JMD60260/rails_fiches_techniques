@@ -1,5 +1,5 @@
 
-*************************** gem Devise, choses à faire ***************************
+# ************* gem Devise **************
 
 Devise permet de créer un système d'authentification complet en gérerant pour toi :
 

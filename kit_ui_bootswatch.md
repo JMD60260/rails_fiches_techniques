@@ -1,4 +1,4 @@
-# Comment utiliser un kit UI Bootswatch
+# -----------Comment utiliser un kit UI Bootswatch -------------
 
 ## Prérequis minimum
 
