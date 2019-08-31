@@ -219,15 +219,14 @@ Une fois ta/tes tables migrées ($ rails db:migrate), teste-la/les dans la conso
   - soit à la main
 	
 		NomModel.destroy_all
-
-		NomModel.create(column1:type, column2:type)
+		10.times do
+			NomModel.create(column1:type, column2:type)
+		end
 
   - soit en utilisant la gem 'faker' mise dans le Gemfile, pour créer des entrées fictives (https://github.com/faker-ruby/faker)
 
 		require 'faker'
-
 		NomModel.destroy_all
-
 		10.times do
 			NomModel.create(
 				nom_column1: nom_du_Faker,
