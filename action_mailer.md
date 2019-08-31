@@ -9,6 +9,7 @@ Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Ac
 
 ## $ rails g mailer UserMailer
 ==> crée un ficher user_mailer.rb dans app/mailers == definition du mail à envoyer
+
 ==> crée un dossier user_mailer dans aap/views == visuel dans mail en html et text
 
 ## Définir à quel moment notre app Rails doit effectuer l'envoi
@@ -45,7 +46,7 @@ Au final, il faut considérer qu'Action Mailer a un fonctionnement très proche 
 
 ## $ rails g mailer UserMailer
 
-### ==> crée un ficher user_mailer.rb dans app/mailers
+### crée un ficher user_mailer.rb dans app/mailers
 
 Tu vas y mettre la definition du mail à envoyer
 
@@ -68,7 +69,7 @@ Ex avec un email de bienvenue lors de l'inscription sur l'appli
 	  end
 	end
 
-### ==> crée un dossier user_mailer dans aap/views
+### crée un dossier user_mailer dans aap/views
 
 Création d'un template d'email dans app/views/user_mailer/
 
@@ -107,7 +108,7 @@ Création d'un template d'email dans app/views/user_mailer/
 
 ## Définir à quel moment notre app Rails doit effectuer l'envoi
 
-### ==> Généralement, c'est au modèle de le faire: définir une méthode appelant la méthode définit dans UserMailer à appliquer après création de l'instance du model == callback after_create
+### Généralement, c'est au modèle de le faire: définir une méthode appelant la méthode définit dans UserMailer à appliquer après création de l'instance du model == callback after_create
 
 Si tu veux envoyer un email à la création d'un utilisateur, c'est un callback after_create dans le model User
 
@@ -122,13 +123,14 @@ Si tu veux envoyer un email quand un utilisateur vient de prendre un RDV sur Doc
 
 	end
 
-### ==> Des fois, dans le controller
+### Des fois, dans le controller
 
 ex: Un email pour réinitialiser le mot de passe peut se mettre dans le controller
 
-### ==> autres cas: création de Service
+### autres cas: création de Service
 ex: Si tu veux envoyer une newsletter hebdomadaire, c'est un Service qui tourne de manière hebdomadaire
 ## Définir à quel moment notre app Rails doit effectuer l'envoi
+
 # 2) Résumé
 
     - Un utilisateur est créé en BDD par le model
@@ -147,17 +149,17 @@ Toutefois, pour des raisons de fiabilité d’envoi depuis des adresses gratuite
 
 ## Config en development
 
-### ==> installation de la gem 'letter_opener' dans Gemfile
+### installation de la gem 'letter_opener' dans Gemfile
 
-### ==> $ bundle install
+### $ bundle install
 
-### ==> dans config/environments/development.rb (fichier contenant les paramètres de ton environnement de développement)
+### dans config/environments/development.rb (fichier contenant les paramètres de ton environnement de développement)
 
 Colle les lignes config.action_mailer.delivery_method = :letter_opener et config.action_mailer.perform_deliveries = true
 
-### ==> dans le terminal, faire une création d'instance
+### dans le terminal, faire une création d'instance
 
-### ==> Tu devrais voir un visuel de l’e-mail que tu as rédigé en HTML s'afficher dans ton navigateur !
+### Tu devrais voir un visuel de l’e-mail que tu as rédigé en HTML s'afficher dans ton navigateur !
 
 
 ## Config en production
@@ -166,19 +168,19 @@ Tu veux pouvoir tester l'affichage de l’e-mail mais éviter de spammer les uti
 Pour le faire, tu as le choix entre plein de services différents : Mandrill by MailChimp, Postmark, Amazon SES, etc. Nous, on a une préférence pour MailJet à THP (ils sont efficaces, pas chers et français).
 Toutefois, pour des raisons de fiabilité d’envoi depuis des adresses gratuites ou fake, je vais te montrer comment passer par le leader du secteur : SendGrid.
 
-### ==> choisir un service d'envoi (ex: Sengrid)
+### choisir un service d'envoi (ex: Sengrid)
 
 	- créer un compte sur https://signup.sendgrid.com/ : indique un site web bidon, précise que tu es développeur et dis que tu vas utiliser leur SMTP/API.
 	- https://app.sendgrid.com/guide/integrate/langs/smtp pour créer une clef API.
 
-### ==> sauvegarder les clés API
+### sauvegarder les clés API
 
 	  - Crée un fichier .env à la racine de ton application.
 	  - Ouvre-le et écris dedans les informations suivantes : SENDGRID_LOGIN='apikey' et SENDGRID_PWD='ta_clef_API' en remplaçant bien sûr ta_clef_API par la clef que tu viens de générer.
 	  - Rajoute gem 'dotenv-rails' à ton Gemfile et fait le $ bundle install
 	  - Et l'étape cruciale qu'on oublie trop souvent : ouvre le fichier .gitignore à la racine de ton app Rails et écris .env dedans.
 
-### ==> paramétrer le SMTP avec Sengrid
+### paramétrer le SMTP avec Sengrid
 
 Dans /confog/envirronement.rb
 
@@ -198,7 +200,7 @@ Dans /confog/envirronement.rb
 
 ## Test d'envoi
 
-### ==> dans un premier temps, tu peux faire plus simple en testant une fois l'envoi directement depuis l'environnement de développement (ton ordi).
+### dans un premier temps, tu peux faire plus simple en testant une fois l'envoi directement depuis l'environnement de développement (ton ordi).
 
     - Enlever la ligne config.action_mailer.delivery_method = :letter_opener du fichier config/environments/development.rb ;
     - Va dans ta console Rails ;
@@ -211,7 +213,7 @@ ATTENTION:
 
 	Seule solution pour tester ton code : viser des adresses du genre @yopmail.com qui sont habituées à servir de poubelle et du coup, elles acceptent tout !
 
-### ==> en production, envoi de mails non considérés comme des spams
+### en production, envoi de mails non considérés comme des spams
 
 - Comme je te l'ai expliqué, la solution propre, c'est d'acheter un nom de domaine et de le paramétrer dans SendGrid…
 
