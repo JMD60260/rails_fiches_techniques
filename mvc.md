@@ -466,17 +466,16 @@ Tu mettras dans le fihier .erb:
 ex:
 
 		<%= form_tag url_for(action: 'create'), method: "post" do %>
-
 		    <%= label_tag 'Contenu' %>
 		    <%= text_field_tag 'content'%>
 		    <br /> <br />
-
 		    <%= submit_tag "Crée ton gossip" %>
 		<% end %>
 
   - tes liens entre les différentes pages de ton appli
 
-		<%= link_to "clique ici", prefix_path %> == <a href="url_liée_au_path_saisi_dans_ton_link_to">clique ici</a>
+		<%= link_to "clique ici", prefix_path %> 
+		== <a href="url_liée_au_path_saisi_dans_ton_link_to">clique ici</a>
 
 
 ### "prefix" == prefix de la route vers lequel tu envoies ton utilisateut, visible dans $ rails routes
@@ -495,19 +494,17 @@ C'est notamment ici qu'il faudra mettre le CDN pour Bootstrap
 
   - Il faudra utiliser le langage ruby dans les fichiers.erb!!! 
 
-en mettant ton code entre <% %> + <% end %>
-
-en mettant <%=  %>, pour afficher son résultat dans ton html 
+		en mettant ton code entre <% %> + <% end %>
+		en mettant <%=  %>, pour afficher son résultat dans ton html 
 
 ex: 
 
-		<% @gossips.each do |gossip| %>
-
-					<%= image_tag("image.jpeg", :size => "319x220") %>
-
-				  <%= link_to "#{gossip.title}", gossip_path(gossip.id)%></h5>
-				  <%= gossip.user.first_name %>
-
+		<% if @gossips != nul %>
+			<% @gossips.each do |gossip| %>
+						<%= image_tag("image.jpeg", :size => "319x220") %>
+					  <%= link_to "#{gossip.title}", gossip_path(gossip.id)%></h5>
+					  <%= gossip.user.first_name %>
+			<% end %>
 		<% end %>
 
 
