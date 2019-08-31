@@ -131,6 +131,7 @@ Pour stocker les fichiers de ton app en production de façon pérenne, tu vas de
 - Configurer Active Storage pour qu'il envoie les fichiers à ton hébergeur.
 
 # Attention, cette fois-ci tu n'as plus le droit à l'erreur : si jamais tu push tes clefs d'API sur GitHub, vu que tu auras donné ta carte bleue au fournisseur, les conséquences pourraient être désastreuses pour ton compte en banque ! Si jamais ça t'arrivait, fonce sur le site de l'hébergeur (Amazon / Google / Microsoft) et révoque les clefs d'API qui ont été compromises. Ainsi elles cesseront de fonctionner et aucun petit malin ne pourra te ruiner en les utilisant.
+
 #Mais le mieux reste quand même de bien te concentrer et de ne pas te rater dans l'utilisation de Dotenv et ton .gitignore.
 
 ==> Exemple avec Amazon

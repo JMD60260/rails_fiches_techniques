@@ -1,6 +1,6 @@
 
 
-# *********************** ACTION MAILER **************************
+# ********* ACTION MAILER ********
 
 
 Rails dispose d'un outil de gestion des envois d'e-mail plutôt bien conçu : Action Mailer. Grâce à lui, tu vas pouvoir automatiser l'envoi de certains e-mails selon les critères que tu définiras (actions de tes utilisateurs, événements ou alertes données, etc..).
